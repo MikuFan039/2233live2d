@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="utf-8">
+  <link rel="shortcut icon" href="favicon.ico">
+  <title>哔哩哔哩2233娘 Live2D 预览</title>
+  <link rel="stylesheet" href="res/css/style.css">
+</head>
+
+<body>
+  <h1>2233娘 Live2D 预览</h1>
+  <div class="main">
+    <!-- 左：canvas -->
+    <div class="preview">
+      <div class="preview-label" id="previewLabel">加载中...</div>
+      <canvas id="live2d" width="512" height="512"></canvas>
+    </div>
+    <!-- 右：控制 -->
+    <div class="controls" id="controls">
+      <span class="label">角色</span>
+      <div class="char-row">
+        <button class="char-btn active" data-char="22">22娘</button>
+        <button class="char-btn" data-char="33">33娘</button>
+      </div>
+      <span class="label">服装</span>
+      <!-- 模型按钮由 JS 渲染 -->
+    </div>
+  </div>
+  <button class="theme-toggle" id="themeToggle"></button>
+  <!-- 引入Live2D_JS -->
+  <script type="text/javascript" src="res/js/live2d.js"></script>
+  <script>
+    // ── 模型列表 ──────────────────────────────────────────────────────────────
+    const MODELS = [
+      { key: 'default', label: '默认模型' },
+      { key: '2016.xmas.1', label: '2016圣诞节 Ver.1' },
+      { key: '2016.xmas.2', label: '2016圣诞节 Ver.2' },
+      { key: '2017.newyear', label: '2017新年' },
+      { key: '2017.school', label: '2017校园' },
+      { key: '2017.vdays', label: '2017情人节' },
+      { key: '2017.summer.normal.1', label: '2017夏季（普通版）Ver.1' },
+      { key: '2017.summer.super.1', label: '2017夏季（高级版）Ver.1' },
+      { key: '2017.summer.normal.2', label: '2017夏季（普通版）Ver.2' },
+      { key: '2017.summer.super.2', label: '2017夏季（高级版）Ver.2' },
+      { key: '2017.cba-normal', label: '2017CBA（普通版）' },
+      { key: '2017.cba-super', label: '2017CBA（高级版）' },
+      { key: '2017.tomo-bukatsu.low', label: '2017朋友社团活动（普通版）' },
+      { key: '2017.tomo-bukatsu.high', label: '2017朋友社团活动（高级版）' },
+      { key: '2017.valley', label: '2017山谷?' },
+      { key: '2018.spring', label: '2018春季' },
+      { key: '2018.lover', label: '2018情人节' },
+      { key: '2018.bls-summer', label: '2018夏季 BLS' },
+      { key: '2018.bls-winter', label: '2018冬季 BLS' },
+    ]
+    let currentChar = '22'
+    let currentModel = 'default'
+    // ── 渲染模型按钮 ──────────────────────────────────────────────────────────
+    const controls = document.getElementById('controls')
+    function renderModelBtns() {
+      // 移除旧的模型按钮（保留角色行和 label）
+      controls.querySelectorAll('.btn').forEach(el => el.remove())
+      MODELS.forEach(m => {
+        const btn = document.createElement('button')
+        btn.className = 'btn' + (m.key === currentModel ? ' active' : '')
+        btn.textContent = m.label
+        btn.addEventListener('click', () => loadModel(currentChar, m.key))
+        controls.appendChild(btn)
+      })
+    }
+    // ── 加载模型 ──────────────────────────────────────────────────────────────
+    function loadModel(char, modelKey) {
+      currentChar = char
+      currentModel = modelKey
+      const path = `res/model/${char}/model.${modelKey}.json`
+      document.getElementById('previewLabel').textContent =
+        `${char}娘 · ${MODELS.find(m => m.key === modelKey)?.label ?? modelKey}`
+      // 更新按钮状态
+      controls.querySelectorAll('.btn').forEach((btn, i) => {
+        btn.classList.toggle('active', MODELS[i].key === modelKey)
+      })
+      controls.querySelectorAll('.char-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.char === char)
+      })
+      loadlive2d('live2d', path)
+    }
+    // ── 角色切换 ──────────────────────────────────────────────────────────────
+    controls.querySelectorAll('.char-btn').forEach(btn => {
+      btn.addEventListener('click', () => loadModel(btn.dataset.char, currentModel))
+    })
+    // ── 主题切换 ──────────────────────────────────────────────────────────────
+    const STORAGE_KEY = 'live2d_theme'
+    const themeBtn = document.getElementById('themeToggle')
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme)
+      themeBtn.textContent = theme === 'dark' ? '☀️ 浅色' : '🌙 深色'
+    }
+    function getInitialTheme() {
+      const saved = localStorage.getItem(STORAGE_KEY)
+      if (saved) return saved
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+    }
+    applyTheme(getInitialTheme())
+    themeBtn.addEventListener('click', () => {
+      const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'
+      applyTheme(next)
+      localStorage.setItem(STORAGE_KEY, next)
+    })
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+      if (!localStorage.getItem(STORAGE_KEY)) applyTheme(e.matches ? 'dark' : 'light')
+    })
+    // ── 初始化 ────────────────────────────────────────────────────────────────
+    renderModelBtns()
+    loadModel('22', 'default')
+  </script>
+</body>
+
+</html>

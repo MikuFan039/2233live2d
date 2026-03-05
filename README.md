@@ -1,47 +1,29 @@
-从 [哔哩哔哩Windows客户端](https://app.bilibili.com/) 解包得到的2233娘live2D模型
+从 [哔哩哔哩 Windows 客户端](https://app.bilibili.com/) 解包得到的 2233 娘 live2D 模型
 
 By：@初代目葱娘
 
 ---
 
-~~（伪）~~食用方式：
+食用方式：
+
+使用非常简单，只需要如下三步：
 
 1. 引入`live2d.js`
 
 ```html
-<script type="text/javascript" src="./live2d.js"></script>
+<script type="text/javascript" src="res/js/live2d.js"></script>
 ```
 
-2. 放置canvas
+2. 放置 canvas
 
 ```html
-<canvas id="live2d" width="220" height="250"></canvas>
+<canvas id="live2d" width="512" height="512"></canvas>
 ```
 
 3. 绑定模型
 
 ```js
-loadlive2d("live2d", "./model/22/model.default.json");
+loadlive2d("live2d", "res/model/22/model.default.json");
 ```
 
----
-
-示例html代码：
-
-```html
-<!DOCTYPE html>
-<html>
-
-<head>
-    <meta charset="UTF-8" />
-    <title>live2d测试</title>
-    <script type="text/javascript" src="./live2d.js"></script>
-</head>
-
-<body>
-    <canvas id="live2d" width="220" height="250"></canvas>
-    <script type="text/javascript">loadlive2d("live2d", "./model/22/model.default.json");</script>
-</body>
-
-</html>
-```
+\* 示例 html 可见`demo.html`
