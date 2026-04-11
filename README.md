@@ -1,6 +1,6 @@
-从 [哔哩哔哩 Windows 客户端](https://app.bilibili.com/) 解包得到的 2233 娘 live2D 模型
+## 2233live2d
 
-By：@初代目葱娘
+从 [哔哩哔哩 Windows 客户端](https://app.bilibili.com/) 解包得到的 2233 娘 live2D 模型
 
 ---
 
